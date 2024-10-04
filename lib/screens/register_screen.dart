@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
+import 'package:chat_app/auth_bloc/auth_bloc.dart';
 import 'package:chat_app/constants.dart';
-import 'package:chat_app/cubits/register_cubit/register_cubit.dart';
 import 'package:chat_app/helper/show_snackbar.dart';
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/widgets/custom_button.dart';
@@ -25,14 +25,15 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<RegisterCubit, RegisterState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is RegisterLoading) {
           isLoading = true;
         } else if (state is RegisterSucessful) {
-          Navigator.pushNamed(context,ChatScreen.id,arguments: emailAddress);
+          Navigator.pushNamed(context, ChatScreen.id, arguments: emailAddress);
           isLoading = false;
-        } else {
+        } else if(state is RegisterFailure) {
+          showSnackBar(context, state.errMsg);
           isLoading = false;
         }
       },
@@ -106,10 +107,10 @@ class RegisterScreen extends StatelessWidget {
                           text: 'REGISTER',
                           onTap: () async {
                             if (formkey.currentState!.validate()) {
-                              BlocProvider.of<RegisterCubit>(context)
-                                  .registerUser(
-                                      emailAddress: emailAddress!,
-                                      password: password!);
+                              BlocProvider.of<AuthBloc>(context).add(
+                                  RegisterEvent(
+                                      email: emailAddress!,
+                                      password: password!));
                             }
                           },
                         ),

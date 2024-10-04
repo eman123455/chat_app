@@ -1,7 +1,8 @@
+import 'package:chat_app/auth_bloc/auth_bloc.dart';
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/cubits/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/helper/show_snackbar.dart';
-import 'package:chat_app/cubits/login_cubit/login_cubit.dart';
+
 import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/register_screen.dart';
 import 'package:chat_app/widgets/custom_button.dart';
@@ -23,7 +24,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginCubit, LoginState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is LoginLoading) {
           isLoading = true;
@@ -31,8 +32,8 @@ class LoginScreen extends StatelessWidget {
           BlocProvider.of<ChatCubit>(context).getMessages();
           Navigator.pushNamed(context, ChatScreen.id,arguments:email );
           isLoading = false;
-        } else {
-          showSnackBar(context, 'There is an error ');
+        } else if(state is LoginFailure) {
+          showSnackBar(context, state.errMsg);
           isLoading = false;
         }
       },
@@ -105,8 +106,8 @@ class LoginScreen extends StatelessWidget {
                         text: 'LOGIN',
                         onTap: () async {
                           if (pKey.currentState!.validate()) {
-                            BlocProvider.of<LoginCubit>(context)
-                                .loginUSer(email: email!, password: password!);
+                            BlocProvider.of<AuthBloc>(context)
+                                .add(LoginEvent(email: email!, password: password!));
                           }
                         },
                       ),

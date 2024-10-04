@@ -10,6 +10,6 @@ final class RegisterLoading extends RegisterState {}
 final class RegisterSucessful extends RegisterState {}
 
 final class RegisterFailure extends RegisterState {
-  String errMsg;
+   String errMsg;
   RegisterFailure({required this.errMsg});
 }
