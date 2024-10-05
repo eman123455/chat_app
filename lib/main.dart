@@ -3,6 +3,7 @@ import 'package:chat_app/cubits/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/cubits/login_cubit/login_cubit.dart';
 import 'package:chat_app/cubits/register_cubit/register_cubit.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/simple_bloc_observer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'firebase_options.dart';
@@ -15,6 +16,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  Bloc.observer = SimpleBlocObserver();
   runApp(MyApp());
 }
 
